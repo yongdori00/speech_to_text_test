@@ -2,12 +2,13 @@
 
 import pyaudio
 import wave
+import cv2
  
 FORMAT = pyaudio.paInt16
 CHANNELS = 1  #only mono
 RATE = 16000  
 CHUNK = 1024  #확인 필요
-RECORD_SECONDS = 10 #10초 녹음
+RECORD_COMMAND = " " 
 
 WAVE_OUTPUT_FILENAME = "file.wav"
  
@@ -20,16 +21,19 @@ stream = audio.open(format=FORMAT, channels=CHANNELS,
 print ("recording...")
 frames = []
  
-for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-    data = stream.read(CHUNK)
-    frames.append(data)
-print ("finished recording")
- 
+try:
+    while True:
+        data = stream.read(CHUNK)
+        frames.append(data)
+except input() == RECORD_COMMAND:
+    pass
  
 # stop Recording
 stream.stop_stream()
 stream.close()
 audio.terminate()
+
+print ("finished recording")
  
 waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
 waveFile.setnchannels(CHANNELS)
