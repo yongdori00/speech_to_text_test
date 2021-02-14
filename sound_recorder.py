@@ -2,13 +2,26 @@
 
 import pyaudio
 import wave
-import cv2
- 
+import threading as th
+
 FORMAT = pyaudio.paInt16
 CHANNELS = 1  #only mono
 RATE = 16000  
 CHUNK = 1024  #확인 필요
-RECORD_COMMAND = " " 
+RECORD_COMMAND = ' '
+
+keep_going = True
+def key_capture_thread():
+    global keep_going
+    input()
+    keep_going = False
+
+def do_stuff():
+    th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
+    print("press space bar to finish")
+    while keep_going:
+        data = stream.read(CHUNK)
+        frames.append(data)
 
 WAVE_OUTPUT_FILENAME = "file.wav"
  
@@ -20,13 +33,8 @@ stream = audio.open(format=FORMAT, channels=CHANNELS,
                 frames_per_buffer=CHUNK)
 print ("recording...")
 frames = []
- 
-try:
-    while True:
-        data = stream.read(CHUNK)
-        frames.append(data)
-except input() == RECORD_COMMAND:
-    pass
+
+do_stuff()
  
 # stop Recording
 stream.stop_stream()

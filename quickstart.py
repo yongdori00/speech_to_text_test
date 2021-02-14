@@ -19,6 +19,7 @@ def run_quickstart():
     # [START speech_quickstart]
     import io
     import os
+    import sys
 
     # Imports the Google Cloud client library
     # [START speech_python_migration_imports]
@@ -32,7 +33,10 @@ def run_quickstart():
     # [END speech_python_migration_client]
 
     # The name of the audio file to transcribe
+    output_name = input("새로 작성할 파일 이름을 적어주세요.")
+    output_name += '.txt'
     file_name = os.path.join(os.path.dirname(__file__), ".", "file.wav")
+    write_file_name = open(output_name, 'w')
 
     # Loads the audio into memory
     with io.open(file_name, "rb") as audio_file:
@@ -49,9 +53,9 @@ def run_quickstart():
     response = client.recognize(config=config, audio=audio)
 
     for result in response.results:
-        print("Transcript: {}".format(result.alternatives[0].transcript))
+        write_file_name.write(format(result.alternatives[0].transcript))
     # [END speech_quickstart]
-
+    write_file_name.close()
 
 if __name__ == "__main__":
     run_quickstart()
